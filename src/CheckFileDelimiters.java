@@ -45,6 +45,8 @@ public class CheckFileDelimiters {
 //}
     public int getCharacterIndex() {return this.characterIndex;}
     public int getCurrentLineIndex() {return this.currentLineIndex;}
+    public void incrementLineIndex() {this.currentLineIndex++;}
+    private void incrementCharacterIndex() {this.characterIndex++;}
 
     public void printFile() throws FileNotFoundException {
         try {

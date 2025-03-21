@@ -100,7 +100,7 @@ public class ControlFileChecker {
             StringBuilder sb = new StringBuilder();
             sb.append(c).append("\t");
             sb.append("[Current char index: ").append(parsedFile.getCharacterIndex()).append("]\t");
-            sb.append("[Current line index: ").append(currentLineIndex).append("]\t");
+            sb.append("[Current line index: ").append(parsedFile.getCurrentLineIndex()).append("]\t");
 
             // Optional delimiter check
             if(delimiterList.contains(c)){
@@ -110,7 +110,7 @@ public class ControlFileChecker {
             }
 
             System.out.println(sb.toString());
-            currentLineIndex++;
+            parsedFile.incrementLineIndex();
         }
 
         // print out the readable file at path
