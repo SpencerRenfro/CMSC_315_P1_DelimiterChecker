@@ -2,14 +2,17 @@ import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 
-
+// add characterIndex to this file
 public class CheckFileDelimiters {
     private final BufferedReader reader;
     private String currentLine = null;
-    private int characterIndex;
+    private String wholeLine = null;
+    private int characterIndex = -1; // because getNextChar increments
     private int currentLineIndex;
     private final String filePath;
+    private ArrayList<String> fileLines;
 
     public CheckFileDelimiters(String filePath) throws FileNotFoundException{
         try {
@@ -37,13 +40,26 @@ public class CheckFileDelimiters {
         return null;
     }
 }
+//    public char peekNextChar() {
+//        if (characterIndex +1 < currentLine.length()) {
+//
+//        }
+//    }
+    public String getCurrentEntireLine() {
+        return this.currentLine;
+    }
+    public Character getCurrentChar() {
+        return this.currentLine.charAt(currentLineIndex);
+    }
 //public String getLineCharNums() {
 //   try{}
 //   catch (Exception e) {
 //       return null;
 //   }
 //}
+
     public int getCharacterIndex() {return this.characterIndex;}
+    public void setCharacterIndex(int characterIndex) {this.characterIndex = characterIndex;}
     public int getCurrentLineIndex() {return this.currentLineIndex;}
     public void incrementLineIndex() {this.currentLineIndex++;}
     private void incrementCharacterIndex() {this.characterIndex++;}

@@ -1,15 +1,11 @@
-//Public
+/* //Public (should be ignored)// */ import java.util.ArrayList;
+
 public class Test {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        if (true) {
+            System.out.println("Test");
+        }
     }
 }
 
-/* COMMENTED OUT CODE SHOULD BE IGNORED
-public class Test {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-  )(  }
-})
-
- */
+/* COMMENTED OUT CODE SHOULD BE IGNORED */
