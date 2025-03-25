@@ -25,22 +25,37 @@ public class CheckFileDelimiters {
     }
 
     public Character getNextChar() {
-    try {
-            if (currentLine == null || characterIndex >= currentLine.length()) {
-                currentLine = reader.readLine();
-                characterIndex = 0;
+        try {
+            // Case 1: Inject virtual newline at end of line
+            if (currentLine != null && characterIndex == currentLine.length()) {
+                characterIndex++; // move past virtual '\n'
+                return '\n';
             }
 
-        char c = currentLine.charAt(characterIndex++);
-        return c;
-            //or  // return currentLine.charAt(index++);
-            // basic version, returns every char (no filtering yet)
+            // Case 2: Move to next line when needed
+            while (currentLine == null || characterIndex > currentLine.length()) {
+                currentLine = reader.readLine();
+                if (currentLine == null) {
+                    return null; // End of file
+                }
+                characterIndex = 0;
+                currentLineIndex++;
+            }
 
-    } catch (Exception e) {
-        return null;
+            // Case 3: Normal char from currentLine
+            return currentLine.charAt(characterIndex++);
+        } catch (Exception e) {
+            return null;
+        }
     }
-}
-//    public char peekNextChar() {
+
+
+    public String getCurrentPositionInfo() {
+        return "Line: " + currentLineIndex + ", Char Index: " + characterIndex;
+    }
+
+
+    //    public char peekNextChar() {
 //        if (characterIndex +1 < currentLine.length()) {
 //
 //        }
@@ -57,6 +72,15 @@ public class CheckFileDelimiters {
 //       return null;
 //   }
 //}
+
+    public Character peekNextChar() {
+        if (currentLine != null && characterIndex + 1 < currentLine.length()) {
+            return currentLine.charAt(characterIndex + 1);
+        } else {
+            return null;
+        }
+    }
+
 
     public int getCharacterIndex() {return this.characterIndex;}
     public void setCharacterIndex(int characterIndex) {this.characterIndex = characterIndex;}
