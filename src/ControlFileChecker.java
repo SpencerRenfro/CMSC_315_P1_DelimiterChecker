@@ -51,8 +51,9 @@ public class ControlFileChecker {
 
         Character c;
         while ((c = parsedFile.getNextChar()) != null) {
-            Character nextChar = parsedFile.peekNextChar();
+            //Character nextChar = parsedFile.getNextChar();
 
+            //
             // If inside a block comment, skip until */
             if (insideBlockComment) {
                 if (c == '*' && nextChar != null && nextChar == '/') {
@@ -90,7 +91,8 @@ public class ControlFileChecker {
                 if (delimiterStack.isEmpty()) {
                     System.out.println("Unmatched right delimiter [" + c + "] at " + parsedFile.getCurrentPositionInfo());
                 } else {
-                    Character left = delimiterStack.pop();
+
+                    Character left = delimiterStack.peek();
                     if (matchingPairs.get(left) != c) {
                         System.out.println("Mismatch! [" + left + "] does not match [" + c + "] at " + parsedFile.getCurrentPositionInfo());
                     }

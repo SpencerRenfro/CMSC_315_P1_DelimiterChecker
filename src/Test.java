@@ -1,11 +1,8 @@
-/* //Public (should be ignored)// */ import java.util.ArrayList;
-// gfdsajlkfgsldkgjsflk
+//Public 
+ // {} [] ()  "" '' 
 public class Test {
     public static void main(String[] args) {
-        if (true) {
-            System.out.println("Test");
-        }
+        System.out.println("Hello, World!");
     }
 }
 
-/* COMMENTED OUT CODE SHOULD BE IGNORED */
