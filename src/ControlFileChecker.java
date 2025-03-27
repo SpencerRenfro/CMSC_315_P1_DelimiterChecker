@@ -55,8 +55,10 @@ public class ControlFileChecker {
 
         Character c;
         while ((c = parsedFile.getNextChar()) != null) {
+            // experimental for getting current char in CheckFIleDelimiters
+            parsedFile.setCurrentChar(c);
             Character nextChar = parsedFile.peekNextChar();
-            System.out.println("Current char: " + c + " Next char: " + nextChar);
+            System.out.println(parsedFile.getCurrentPositionInfo() +  "Current char: " + c + " Next char: " + nextChar);
 
 
             // Check for line or block comments and skip until end of comment or new line
