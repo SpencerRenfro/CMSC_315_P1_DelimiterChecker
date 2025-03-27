@@ -28,9 +28,12 @@ public class ControlFileChecker {
         }
     }
 
+
+
     public static void main(String[] args) throws FileNotFoundException {
         int fileConnectionMade = PromptUserForFilePath();
         boolean insideBlockComment = false;
+        boolean insideLineComment = false;
 
         // Collections
         Set<Character> leftDelimiters = new HashSet<>(Arrays.asList('{', '[', '('));
@@ -42,6 +45,7 @@ public class ControlFileChecker {
 
         Stack<Character> delimiterStack = new Stack<>();
 
+
         if (fileConnectionMade == 1) {
             System.out.println("File connection made");
         } else {
@@ -52,61 +56,89 @@ public class ControlFileChecker {
         Character c;
         while ((c = parsedFile.getNextChar()) != null) {
             Character nextChar = parsedFile.peekNextChar();
+            System.out.println("Current char: " + c + " Next char: " + nextChar);
 
-            // If inside a block comment, skip until */
-            if (insideBlockComment) {
-                if (c == '*' && nextChar != null && nextChar == '/') {
-                    insideBlockComment = false;
-                    parsedFile.getNextChar(); // consume '/'
-                }
+
+            // Check for line or block comments and skip until end of comment or new line
+            if(c == '/' && nextChar != null && nextChar == '/') {
+                System.out.println("Line comment detected, skip to new line");
+                parsedFile.incrementLineIndex();
                 continue;
             }
-
-            // Detect start of block comment
-            if (c == '/' && nextChar != null && nextChar == '*') {
-                insideBlockComment = true;
-                parsedFile.getNextChar(); // consume '*'
-                continue;
-            }
-
-            // Detect single-line comment //
-            if (c == '/' && nextChar != null && nextChar == '/') {
-
-                // Skip chars until virtual newline is encountered
-                StringBuilder lineComment = new StringBuilder();
-                while ((c = parsedFile.getNextChar()) != null && c != '\n') {
+            if(c == '/' && nextChar != null && nextChar == '*'){
+                System.out.println("Block comment detected, skip until end of comment, setting inside block comment to true");
+                parsedFile.SetInsideBlockComment(true);
+                while((c = parsedFile.getNextChar()) != null){
                     // skip chars inside the comment
-                    lineComment.append(c);
+                   nextChar = parsedFile.peekNextChar();
+                    System.out.println("skipped" + c);
+                    if(c == '*' && nextChar != null && nextChar == '/'){
+                        System.out.println("End of block comment detected, setting inside block comment to false");
+                       // parsedFile.getNextChar();
+
+                        parsedFile.SetInsideBlockComment(false);
+                        break;
+                    }
+
                 }
-                System.out.println("Single-line comment: " + lineComment.toString());
                 continue;
             }
 
             // Normal delimiter processing
             if (leftDelimiters.contains(c)) {
                 delimiterStack.push(c);
-                System.out.println("Pushed left delimiter [" + c + "] at " + parsedFile.getCurrentPositionInfo());
+                System.out.println("Pushed left delimiter `" + c + "`  at " + parsedFile.getCurrentPositionInfo());
             } else if (rightDelimiters.contains(c)) {
                 if (delimiterStack.isEmpty()) {
-                    System.out.println("Unmatched right delimiter [" + c + "] at " + parsedFile.getCurrentPositionInfo());
+                    System.out.println("Extra right delimiter `" + c + "` at " + parsedFile.getCurrentPositionInfo());
                 } else {
-                    Character left = delimiterStack.pop();
-                    if (matchingPairs.get(left) != c) {
-                        System.out.println("Mismatch! [" + left + "] does not match [" + c + "] at " + parsedFile.getCurrentPositionInfo());
+                    Character lastLeft = delimiterStack.pop();
+                    if (matchingPairs.get(lastLeft) == c) {
+                        System.out.println("Matched delimiters: `" + lastLeft + "` and `" + c + "` at " + parsedFile.getCurrentPositionInfo());
+                    } else {
+                        System.out.println("Mismatch! `" + lastLeft + "` does not match `" + c + "`  at " + parsedFile.getCurrentPositionInfo());
+                        parsedFile.setMismatchedDelimiter();
+
                     }
+
                 }
             }
         }
-
-
-
-        if (!delimiterStack.isEmpty()) {
-            System.out.println("---- UNCLOSED LEFT DELIMITERS DETECTED ----");
-            while (!delimiterStack.isEmpty()) {
-                System.out.println("Unmatched left delimiter: [" + delimiterStack.pop() + "]");
-            }
+        System.out.println("\n\nFinal delimiter stack: ");
+        while (!delimiterStack.isEmpty()) {
+            System.out.print(delimiterStack.pop() + " ");
         }
 
-        System.out.println("\n\nFinal delimiter stack: " + delimiterStack);
     }
 }
+
+
+        // If inside a block comment, skip until */
+
+//            if (insideBlockComment) {
+//                if (c == '*' && nextChar != null && nextChar == '/') {
+//                    insideBlockComment = false;
+//                    parsedFile.getNextChar(); // consume '/'
+//                }
+//                continue;
+//            }
+
+        // Detect start of block comment
+//            if (c == '/' && nextChar != null && nextChar == '*') {
+//                insideBlockComment = true;
+//                parsedFile.getNextChar(); // consume '*'
+//                continue;
+//            }
+
+        // Detect single-line comment //
+//            if (c == '/' && nextChar != null && nextChar == '/') {
+//
+//                // Skip chars until virtual newline is encountered
+//                StringBuilder lineComment = new StringBuilder();
+//                while ((c = parsedFile.getNextChar()) != null && c != '\n') {
+//                    // skip chars inside the comment
+//                    lineComment.append(c);
+//                }
+//                System.out.println("Single-line comment: " + lineComment.toString());
+//                continue;
+//            }
