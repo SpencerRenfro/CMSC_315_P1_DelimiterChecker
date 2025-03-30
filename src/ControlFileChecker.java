@@ -6,10 +6,13 @@ Spencer Renfro
 import java.io.FileNotFoundException;
 import java.util.*;
 
+
 public class ControlFileChecker {
 
     public static CheckFileDelimiters parsedFile = null;
     public static Scanner input = new Scanner(System.in);
+    private static boolean singleQuoteFlag = false;
+
 
     public static int PromptUserForFilePath() {
         while (true) {
@@ -28,12 +31,19 @@ public class ControlFileChecker {
         }
     }
 
+    public static boolean containsSingleQuote(char[] content) {
+        for (char c : content) {
+            if (c == '\'') {
+                return true;
+            }
+        }
+        return false;
+        
+    }
 
 
     public static void main(String[] args) throws FileNotFoundException {
         int fileConnectionMade = PromptUserForFilePath();
-        boolean insideBlockComment = false;
-        boolean insideLineComment = false;
 
         // Collections
         Set<Character> leftDelimiters = new HashSet<>(Arrays.asList('{', '[', '('));
@@ -85,6 +95,54 @@ public class ControlFileChecker {
                 }
                 continue;
             }
+            // Skip until the next single quote
+            // single quotes can only have one character
+            // single quotes cannot take double quotes inside them, unless escaped
+            if(c == '\''){
+                delimiterStack.push(c);
+                singleQuoteFlag = true;
+                System.out.println("Single quote detected, skip until end of string, setting inside string to true");    
+
+                char [] singleQuotesContent = new char[20];
+                for(int i = 0; i < 3;i++){
+                   singleQuotesContent[i] = parsedFile.getNextChar();
+                   if(singleQuotesContent[i] == '\'' || singleQuotesContent == null){
+                       System.out.println("End of single quote detected, setting inside string to false");
+                       delimiterStack.pop();
+                       singleQuoteFlag = false;
+                       break;
+                   }
+                };
+                if(singleQuoteFlag){
+                    parsedFile.setMismatchedDelimiter();
+                    System.out.println("Mismatch! Single quote not closed at " + parsedFile.getCurrentPositionInfo());
+                    System.exit(1);
+                }
+                
+               
+                continue;
+            }
+            //continues until closing double quote is found or end of file
+            if(c == '\"'){
+                System.out.println("Double quote detected, skip until end of string, setting inside string to true");    
+                delimiterStack.push(c);
+                while(c != '\"' || c != null){
+                //while((c = parsedFile.getNextChar()) != null || c != '\"'){ {    
+                    c = parsedFile.getNextChar();
+                    if(c == '\"'){
+                        System.out.println("End of double quote detected, setting inside string to false");
+                        break;
+                    }
+                    if(c == null || c == ' '){
+                        System.out.println("Mismatch! Double quote not closed at " + parsedFile.getCurrentPositionInfo());
+                        parsedFile.setMismatchedDelimiter();
+                        System.exit(1);
+                }
+                }
+    
+                break;
+            }
+
 
             // Normal delimiter processing
             if (leftDelimiters.contains(c)) {
@@ -114,33 +172,3 @@ public class ControlFileChecker {
     }
 }
 
-
-        // If inside a block comment, skip until */
-
-//            if (insideBlockComment) {
-//                if (c == '*' && nextChar != null && nextChar == '/') {
-//                    insideBlockComment = false;
-//                    parsedFile.getNextChar(); // consume '/'
-//                }
-//                continue;
-//            }
-
-        // Detect start of block comment
-//            if (c == '/' && nextChar != null && nextChar == '*') {
-//                insideBlockComment = true;
-//                parsedFile.getNextChar(); // consume '*'
-//                continue;
-//            }
-
-        // Detect single-line comment //
-//            if (c == '/' && nextChar != null && nextChar == '/') {
-//
-//                // Skip chars until virtual newline is encountered
-//                StringBuilder lineComment = new StringBuilder();
-//                while ((c = parsedFile.getNextChar()) != null && c != '\n') {
-//                    // skip chars inside the comment
-//                    lineComment.append(c);
-//                }
-//                System.out.println("Single-line comment: " + lineComment.toString());
-//                continue;
-//            }

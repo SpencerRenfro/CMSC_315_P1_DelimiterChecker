@@ -30,7 +30,7 @@ public class CheckFileDelimiters {
         try {
             // Case 1: Inserts newline at end of line, or if line is null (empty) not end of file
             if (currentLine != null && characterIndex == currentLine.length()) {
-                System.out.println("detected end of line at Line:" +currentLineIndex + " Current line is null or character index is at end of line, inserting new line"  );
+                System.out.println("detected end of line at Line:" + currentLineIndex + " Current line is null or character index is at end of line, inserting new line"  );
                 System.out.println("TEST FOR SKIPPING NEW LINE:  CURRENT_CHAR: " + getCurrentChar() + "next char");
                 characterIndex++; // move past '\n'
                 currentLineIndex++;
@@ -77,7 +77,7 @@ public class CheckFileDelimiters {
                     System.out.println("Empty line detected");
 //                    currentLineIndex++;
 //                    characterIndex = -1;
-                    continue;
+                    return '\n'; // Return newline character for empty line
                 }
                 // Controller detected missMatch with using char and nextChar, then sets mismatchedDelimiter to true
                 if(mismatchedDelimiter){
