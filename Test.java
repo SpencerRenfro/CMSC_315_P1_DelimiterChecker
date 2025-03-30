@@ -1,14 +1,5 @@
 public class Test {
     public static void main(String[] args) {
-        if (true ){
-
-            System.out.println('\"');
-        }
-    } //before empty line () test for checking delimiters [ {
-
-} // after empty line
-/*
-
-
-/
- */
+        System.out.println("Test class is running.");
+    }
+}
