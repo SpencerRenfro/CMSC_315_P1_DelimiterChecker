@@ -1,6 +1,21 @@
 /*
 CMSC 315 Project 1
 Spencer Renfro
+
+To run the program, run the ControlFileChecker.java file. The program will prompt the user for a file path,
+and this must be a valid .java file. Example with files located in the src folder: src/Test.java
+The Test.java file is a file to be used for testing the program.
+
+Following a correct file path the program then checks the file for matching delimiters. The program will check for matching delimiters in the file,
+and will print out any mismatches or missing delimiters. The program will also check for comments and string literals,
+and will skip over them. The program will also check for single quotes and double quotes, and will skip over them as well.
+
+
+Print statements below are commented out, but can be uncommented
+to show every character and next character in the file,
+line comment detection that prints the start and end and all characters that are skipped,
+and the same for block comments. Lastly a print statement for the delimiter stack.
+of the program for test cases
  */
 
 import java.io.FileNotFoundException;

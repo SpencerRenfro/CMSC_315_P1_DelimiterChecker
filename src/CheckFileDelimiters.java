@@ -8,7 +8,7 @@ public class CheckFileDelimiters {
     private final BufferedReader reader;
     public String currentLine = null; // returns the string of the entire line
     private int characterIndex = -1; // getNextChar increments
-    private int currentLineIndex; // Index of current line starts at 0
+    private int currentLineIndex = 1; // Index of current line starts at 1
     public boolean insideBlockComment = false;
     public boolean mismatchedDelimiter = false;
     public char currentChar; // current character set in Controller
@@ -43,7 +43,7 @@ public class CheckFileDelimiters {
                 // }
     
                 // Handle empty lines
-                if(currentLine.trim().isEmpty()) {
+                if (currentLine != null && currentLine.trim().isEmpty()) {
                     characterIndex = 0;
                      // if empty line is at start of file, character indexs is at -1,
                      // if this is not set to 0, this will cause an index out of bounds error
